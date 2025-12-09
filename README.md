@@ -15,25 +15,60 @@ The React Compiler is not enabled on this template because of its impact on dev 
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
-**Despliegue en Netlify**
-- **Resumen**: Netlify puede desplegar la carpeta `frontend` automáticamente usando este repositorio.
-- **Automático (usando `netlify.toml`)**: Se añadió `netlify.toml` en la raíz que configura:
-	- `command`: `npm run build --prefix frontend`
-	- `publish`: `frontend/dist`
-	- redirección SPA ya configurada.
-- **Pasos manuales**:
-	1. En Netlify: New site from Git y conecta tu repositorio.
-	2. En Build settings, establece `Base directory` a `frontend` (si no usas `netlify.toml`).
-	3. `Build command`: `npm run build`
-	4. `Publish directory`: `dist`
-- **Nota**: El archivo `frontend/public/_redirects` fue añadido para manejar rutas de SPA.
-- **Comandos locales**:
-``powershell
-cd frontend
-npm install
-npm run build
-npm run preview
-``
+## Despliegue 100% en Netlify
+
+1. Verifica que el archivo `netlify.toml` existe en la raíz de `frontend`:
+	```toml
+	[build]
+	  publish = "dist"
+	  command = "npm run build"
+	[[redirects]]
+	  from = "/api/*"
+	  to = "https://tu-backend-url.netlify.app/:splat"
+	  status = 200
+	```
+
+2. El archivo `public/_redirects` debe contener:
+	```
+	/*    /index.html   200
+	```
+
+3. El archivo `vite.config.js` debe tener:
+	```js
+	export default defineConfig({
+	  base: './',
+	  plugins: [react()],
+	})
+	```
+
+4. En `index.html`, los paths deben ser relativos:
+	```html
+	<link rel="icon" type="image/svg+xml" href="vite.svg" />
+	<script type="module" src="src/main.jsx"></script>
+	```
+
+5. Scripts en `package.json`:
+	```json
+	"build": "vite build"
+	```
+
+6. Pasos para desplegar:
+	- Sube el repo a GitHub.
+	- En Netlify, selecciona "New site from Git" y conecta tu repo.
+	- Build command: `npm run build`
+	- Publish directory: `dist`
+
+7. Para probar localmente:
+	```powershell
+	cd frontend
+	npm install
+	npm run build
+	npm run preview
+	```
+
+8. Si usas rutas en React Router, la redirección SPA ya está lista.
+
+9. Si tu backend está en otro dominio, ajusta el proxy en Vite o usa funciones serverless en Netlify.
 
 **Despliegue en GitHub Pages**
 
