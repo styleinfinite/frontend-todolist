@@ -34,3 +34,19 @@ npm install
 npm run build
 npm run preview
 ``
+
+**Despliegue en GitHub Pages**
+
+- **Resumen**: Este repositorio ahora incluye un flujo de GitHub Actions que construye la carpeta `frontend` y publica `frontend/dist` en la rama `gh-pages`.
+- **Configuración importante**: `vite.config.js` tiene `base` establecido en `/backend-todolist/` para servir correctamente los assets desde `https://<usuario>.github.io/backend-todolist/`.
+- **Qué hace el workflow**: `.github/workflows/deploy-frontend-gh-pages.yml` se dispara en `push` sobre `main`, ejecuta `npm ci` y `npm run build` en `frontend`, y publica `frontend/dist` en la rama `gh-pages` con `peaceiris/actions-gh-pages`.
+- **Acciones que debes realizar**:
+	1. Asegúrate de subir (commit + push) los cambios al repositorio (`netlify.toml`, `_headers`, `_redirects`, `vite.config.js`, workflow).
+	2. Espera a que el workflow termine (GitHub → Actions → Deploy Frontend to GitHub Pages).
+	3. Abre la URL `https://LuyerPerez.github.io/backend-todolist/` (puede tardar unos minutos la primera vez).
+- **Comandos locales**:
+``powershell
+cd frontend
+npm install
+npm run build
+``
